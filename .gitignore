@@ -3,3 +3,11 @@ OOP/practice_4/bin/
 /OOP/practice_5/src/*.class
 *.class
 /Kotlin
+
+[Bb]in/
+[Oo]bj/
+*.dll
+*.exe
+*.pdb
+*.user
+.vs/
