@@ -1,0 +1,6 @@
+docker compose logs -f generator
+docker exec -it iot-mosquitto mosquitto_sub -h localhost -p 1883 -t "iot/#" -v
+
+@flowfuse/node-red-dashboard
+
+docker exec -it iot-mosquitto mosquitto_pub -h localhost -p 1883 -t "iot/student-12/telemetry" -m '{"deviceId":"student-12","value":24.7}'
