@@ -1,0 +1,47 @@
+services:
+    mosquitto:
+        image: eclipse-mosquitto:2
+        container_name: iot-mosquitto
+        ports:
+            - 1883:1883
+        volumes:
+            - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro,z
+            - mosquitto-data:/mosquitto/data
+        networks:
+            - iot-net
+        restart: unless-stopped
+
+    node-red:
+        image: nodered/node-red:latest
+        container_name: iot-node-red
+        ports:
+            - "1880:1880"
+        volumes:
+            - node-red-data:/data
+        networks:
+            - iot-net
+        depends_on:
+            - mosquitto
+        restart: unless-stopped
+
+    generator:
+        build: ./generator
+        container_name: iot-generator
+        environment:
+            MQTT_HOST: mosquitto
+            MQTT_PORT: 1883
+            DEVICE_ID: "${STUDENT_ID:-student-15}"
+            INTERVAL: "${SIM_INTERVAL:-5}"
+        networks:
+            - iot-net
+        depends_on:
+            - mosquitto
+        restart: unless-stopped
+
+networks:
+    iot-net:
+        driver: bridge
+
+volumes:
+    mosquitto-data:
+    node-red-data:
