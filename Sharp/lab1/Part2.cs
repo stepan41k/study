@@ -44,7 +44,7 @@ public static class Task17
         using var sw = new StreamWriter(outputPath);
         if (result.Count == 0)
         {
-            sw.WriteLine("Требуемые учащиеся не найдены");
+            sw.WriteLine("Students not found");
         }
         else
         {
@@ -103,7 +103,7 @@ public static class Task18
             .OrderBy(x => x.StoreName)
             .ThenBy(x => x.Street);
 
-        Console.WriteLine("\n[18. Потребители со скидкой по магазинам и улицам]:");
+        Console.WriteLine("\nConsumers with discount by store and street:");
         foreach (var item in query)
         {
             Console.WriteLine($"{item.StoreName} | {item.Street} | {item.ConsumerCount}");
@@ -143,7 +143,7 @@ public static class Task19
         using var sw = new StreamWriter(outputPath);
         if (query.Count == 0)
         {
-            sw.WriteLine("Требуемые данные не найдены");
+            sw.WriteLine("Data not found");
         }
         else
         {
@@ -190,10 +190,10 @@ public static class Task20
             .OrderBy(x => x.BirthYear)
             .ThenBy(x => x.StoreName);
 
-        Console.WriteLine("\n[20. Стоимость покупок по году рождения и магазину]:");
+        Console.WriteLine("\nCost of purchases by birth year and store:");
         foreach (var item in query)
         {
-            Console.WriteLine($"{item.BirthYear} | {item.StoreName} | {item.TotalPrice} руб.");
+            Console.WriteLine($"{item.BirthYear} | {item.StoreName} | {item.TotalPrice} rub.");
         }
     }
 }

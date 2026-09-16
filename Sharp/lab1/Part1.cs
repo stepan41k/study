@@ -33,9 +33,9 @@ public class ProjectTask : IEquatable<ProjectTask>
 
     public override string ToString()
     {
-        string tagsStr = Tags.Length > 0 ? string.Join(", ", Tags) : "нет";
-        return $"[Задача #{Id}] '{Title}' | Исполнитель: {Assignee} | Часы: {EstimatedHours:F1}h | " +
-               $"Дата: {CreatedDate:yyyy-MM-dd} | Категория: {Category} | Статус: {Status} | Теги: [{tagsStr}]";
+        string tagsStr = Tags.Length > 0 ? string.Join(", ", Tags) : "no";
+        return $"Task #{Id} '{Title}' | Assignee: {Assignee} | Hours: {EstimatedHours:F1}h | " +
+               $"Date: {CreatedDate:yyyy-MM-dd} | Category: {Category} | Status: {Status} | Tags: [{tagsStr}]";
     }
 
     public bool Equals(ProjectTask? other) => other is not null && Id == other.Id;
@@ -47,30 +47,30 @@ public static class TaskManager
 {
     public static ProjectTask ReadFromConsole()
     {
-        Console.WriteLine("--- Ввод данных задачи ---");
-        Console.Write("Введите ID: ");
+        Console.WriteLine("Input:");
+        Console.Write("Input ID: ");
         int id = int.Parse(Console.ReadLine() ?? "1");
 
-        Console.Write("Введите название: ");
-        string title = Console.ReadLine() ?? "Новая задача";
+        Console.Write("Input title: ");
+        string title = Console.ReadLine() ?? "New Task";
 
-        Console.Write("Введите исполнителя: ");
-        string assignee = Console.ReadLine() ?? "Иванов И.И.";
+        Console.Write("Input assignee: ");
+        string assignee = Console.ReadLine() ?? "Ivanov I.I.";
 
-        Console.Write("Введите оценку в часах: ");
+        Console.Write("Input hours: ");
         double hours = double.Parse(Console.ReadLine() ?? "8");
 
-        Console.Write("Введите дату (гггг-мм-дд) или Enter для текущей: ");
+        Console.Write("Input date (yyyy-MM-dd) or Enter for current: ");
         string? dateStr = Console.ReadLine();
         DateTime date = string.IsNullOrWhiteSpace(dateStr) ? DateTime.Now : DateTime.Parse(dateStr);
 
-        Console.WriteLine("Выберите категорию (0-Development, 1-Design, 2-Testing, 3-Documentation, 4-Management): ");
+        Console.WriteLine("Input category (0-Development, 1-Design, 2-Testing, 3-Documentation, 4-Management): ");
         TaskCategory category = (TaskCategory)int.Parse(Console.ReadLine() ?? "0");
 
-        Console.WriteLine("Выберите статус (0-Todo, 1-InProgress, 2-Review, 3-Done): ");
+        Console.WriteLine("Input status (0-Todo, 1-InProgress, 2-Review, 3-Done): ");
         TaskProgress status = (TaskProgress)int.Parse(Console.ReadLine() ?? "0");
 
-        Console.Write("Введите теги через запятую: ");
+        Console.Write("Input tags: ");
         string[] tags = (Console.ReadLine() ?? "")
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
@@ -89,7 +89,7 @@ public static class TaskManager
 
     private static readonly Random Rnd = new();
     private static readonly string[] Titles = { "Верстка UI", "Рефакторинг API", "Написание тестов", "Развертывание в облаке", "Анализ требований", "Оптимизация SQL" };
-    private static readonly string[] People = { "Иванов", "Петров", "Сидоров", "Кузнецов", "Смирнов" };
+    private static readonly string[] People = { "Ivanov", "Petrov", "Sidorov", "Kuznecov", "Smirnov" };
     private static readonly string[][] TagsList = {
         new[] { "Backend", "C#" },
         new[] { "Frontend", "CSS" },
@@ -128,11 +128,11 @@ public static class TaskManager
         var queue = new Queue<ProjectTask>();
         queue.Enqueue(root);
 
-        Console.WriteLine("\n[13. Обход дерева в ширину (Queue)]:");
+        Console.WriteLine("\nBFS:");
         while (queue.Count > 0)
         {
             var current = queue.Dequeue();
-            Console.WriteLine($"Узел #{current.Id} ('{current.Title}'), Дочерних: {current.SubTasks.Count}");
+            Console.WriteLine($"Node #{current.Id} ('{current.Title}'), Children: {current.SubTasks.Count}");
             foreach (var child in current.SubTasks)
             {
                 queue.Enqueue(child);
@@ -157,55 +157,55 @@ public static class TasksDemo
 {
     public static void Run()
     {
-        Console.WriteLine("=== Задания 1-4: Консольный ввод/вывод ===");
+        Console.WriteLine("Console input/output");
 
         int n = 10;
         List<ProjectTask> list = TaskManager.GenerateStream().Take(n).ToList();
 
-        Console.WriteLine($"\n=== Задание 8: Список из {n} элементов ===");
+        Console.WriteLine($"\nList из {n} elements");
         list.Add(TaskManager.GenerateRandomTask());       
         list.Insert(2, TaskManager.GenerateRandomTask());  
         list.RemoveAt(0);                                  
 
-        Console.WriteLine($"Итоговый размер списка: {list.Count}");
+        Console.WriteLine($"Result list length: {list.Count}");
 
         var set1 = new HashSet<ProjectTask>(list.Where(t => t.Category == TaskCategory.Development));
         var set2 = new HashSet<ProjectTask>(list.Where(t => t.EstimatedHours > 15));
 
-        Console.WriteLine("\n=== Задание 10: Операции над множествами ===");
+        Console.WriteLine("\nSets");
         var union = new HashSet<ProjectTask>(set1);
         union.UnionWith(set2);
-        Console.WriteLine($"Объединение (Union): {union.Count} элементов");
+        Console.WriteLine($"Union: {union.Count} elements");
 
         var intersect = new HashSet<ProjectTask>(set1);
         intersect.IntersectWith(set2);
-        Console.WriteLine($"Пересечение (Intersect): {intersect.Count} элементов");
+        Console.WriteLine($"Intersect: {intersect.Count} elements");
 
         var diff = new HashSet<ProjectTask>(set1);
         diff.ExceptWith(set2);
-        Console.WriteLine($"Разность (Set1 \\ Set2): {diff.Count} элементов");
+        Console.WriteLine($"Diff (Set1 \\ Set2): {diff.Count} elements");
 
-        Console.WriteLine("\n=== Задание 11: История изменений свойства (Undo) ===");
+        Console.WriteLine("\nHistory Undo");
         var history = new Dictionary<ProjectTask, Stack<double>>();
         var sampleTask = list.First();
 
         history[sampleTask] = new Stack<double>();
         history[sampleTask].Push(sampleTask.EstimatedHours);
-        Console.WriteLine($"Начальное время: {sampleTask.EstimatedHours}h");
+        Console.WriteLine($"Start time: {sampleTask.EstimatedHours}h");
 
         sampleTask.EstimatedHours = 25.0;
         history[sampleTask].Push(sampleTask.EstimatedHours);
-        Console.WriteLine($"Изменили на: {sampleTask.EstimatedHours}h");
+        Console.WriteLine($"Changed to: {sampleTask.EstimatedHours}h");
 
         sampleTask.EstimatedHours = 40.0;
         history[sampleTask].Push(sampleTask.EstimatedHours);
-        Console.WriteLine($"Изменили на: {sampleTask.EstimatedHours}h");
+        Console.WriteLine($"Changed to: {sampleTask.EstimatedHours}h");
 
         history[sampleTask].Pop();
         sampleTask.EstimatedHours = history[sampleTask].Peek();
-        Console.WriteLine($"После Undo (Pop): {sampleTask.EstimatedHours}h");
+        Console.WriteLine($"After Undo (Pop): {sampleTask.EstimatedHours}h");
 
-        Console.WriteLine("\n=== Задания 12-14: Иерархия задач ===");
+        Console.WriteLine("\nИерархия задач");
         var root = TaskManager.GenerateRandomTask();
         var child1 = TaskManager.GenerateRandomTask();
         var child2 = TaskManager.GenerateRandomTask();
@@ -218,13 +218,13 @@ public static class TasksDemo
         TaskManager.BreadthFirstSearch(root);
         var dfsSequence = TaskManager.DepthFirstSearch(root).ToList();
 
-        Console.WriteLine("\n=== Задание 15: Статистика по дереву ===");
-        Console.WriteLine($"Количество объектов: {dfsSequence.Count}");
-        Console.WriteLine($"Объект с максимальной датой: {dfsSequence.MaxBy(t => t.CreatedDate)}");
-        Console.WriteLine($"Объект с минимальной датой: {dfsSequence.MinBy(t => t.CreatedDate)}");
-        Console.WriteLine($"Сумма всех часов: {dfsSequence.Sum(t => t.EstimatedHours)}");
+        Console.WriteLine("\nTree stat");
+        Console.WriteLine($"Count: {dfsSequence.Count}");
+        Console.WriteLine($"Max date: {dfsSequence.MaxBy(t => t.CreatedDate)}");
+        Console.WriteLine($"Min date: {dfsSequence.MinBy(t => t.CreatedDate)}");
+        Console.WriteLine($"Sum of hours: {dfsSequence.Sum(t => t.EstimatedHours)}");
 
-        Console.WriteLine("\n=== Задание 16: Демонстрация методов LINQ ===");
+        Console.WriteLine("\nLINQ demo");
         var bigList = TaskManager.GenerateStream().Take(20).ToList();
 
         var query = bigList
@@ -233,25 +233,25 @@ public static class TasksDemo
             .ThenByDescending(t => t.EstimatedHours)
             .Select(t => t.Assignee)
             .Distinct();
-        Console.WriteLine($"Уникальные исполнители крупных задач: {string.Join(", ", query)}");
+        Console.WriteLine($"Unique executors of big tasks: {string.Join(", ", query)}");
 
         var firstDev = bigList.FirstOrDefault(t => t.Category == TaskCategory.Development);
-        Console.WriteLine($"Первая задача разработки: {(firstDev != null ? firstDev.Title : "не найдена")}");
+        Console.WriteLine($"First task of development: {(firstDev != null ? firstDev.Title : "not found")}");
 
-        Console.WriteLine($"Count: {bigList.Count(t => t.Status == TaskProgress.Done)} выполненных");
-        Console.WriteLine($"Min часов: {bigList.Min(t => t.EstimatedHours)}");
-        Console.WriteLine($"Max часов: {bigList.Max(t => t.EstimatedHours)}");
-        Console.WriteLine($"Average часов: {bigList.Average(t => t.EstimatedHours):F2}");
-        Console.WriteLine($"Sum часов: {bigList.Sum(t => t.EstimatedHours):F1}");
+        Console.WriteLine($"Count: {bigList.Count(t => t.Status == TaskProgress.Done)} done");
+        Console.WriteLine($"Min hours: {bigList.Min(t => t.EstimatedHours)}");
+        Console.WriteLine($"Max hours: {bigList.Max(t => t.EstimatedHours)}");
+        Console.WriteLine($"Average hours: {bigList.Average(t => t.EstimatedHours):F2}");
+        Console.WriteLine($"Sum hours: {bigList.Sum(t => t.EstimatedHours):F1}");
 
-        Console.WriteLine("\n--- Группировка по категориям (GroupBy) ---");
+        Console.WriteLine("\nGrouping by category");
         var groups = bigList.GroupBy(t => t.Category);
         foreach (var g in groups)
         {
-            Console.WriteLine($"Группа: {g.Key} | Задач: {g.Count()} | " +
-                              $"Мин. дата: {g.Min(x => x.CreatedDate):yyyy-MM-dd} | " +
-                              $"Макс. дата: {g.Max(x => x.CreatedDate):yyyy-MM-dd} | " +
-                              $"Средние часы: {g.Average(x => x.EstimatedHours):F1}");
+            Console.WriteLine($"Group: {g.Key} | Tasks: {g.Count()} | " +
+                              $"Min date: {g.Min(x => x.CreatedDate):yyyy-MM-dd} | " +
+                              $"Max date: {g.Max(x => x.CreatedDate):yyyy-MM-dd} | " +
+                              $"Average hours: {g.Average(x => x.EstimatedHours):F1}");
         }
     }
 }

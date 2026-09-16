@@ -17,7 +17,7 @@ var grades = new List<StudentGrade>
     new() { Form = 10, LastName = "Сидоров", Initials = "С.С.", Subject = "Геометрия", Grade = 5 }
 };
 Task17.Run(grades, "result17.txt");
-Console.WriteLine("\n[17] Результат сохранен в result17.txt");
+Console.WriteLine("\nResult saved in result17.txt");
 
 // 18-20
 var consumers = new List<ConsumerA>
@@ -52,5 +52,5 @@ var purchases = new List<PurchaseE>
 // 18, 19, 20
 Task18.Run(consumers, discounts);
 Task19.Run(discounts, prices, purchases, "result19.txt");
-Console.WriteLine("[19] Результат сохранен в result19.txt");
+Console.WriteLine("Result saved in result19.txt");
 Task20.Run(consumers, discounts, prices, purchases);
