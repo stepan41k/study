@@ -38,11 +38,10 @@ public static class Task17
             })
             .OrderBy(s => s.Form)
             .ThenBy(s => s.LastName)
-            .ThenBy(s => s.Initials)
-            .ToList();
+            .ThenBy(s => s.Initials);
 
         using var sw = new StreamWriter(outputPath);
-        if (result.Count == 0)
+        if (result.Any())
         {
             sw.WriteLine("Students not found");
         }
