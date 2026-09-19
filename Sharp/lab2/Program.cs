@@ -9,45 +9,43 @@ internal class Program
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        Console.WriteLine("=== Задание 1 ===");
+        Console.WriteLine("Task 1");
         Task1_TwoThreads();
 
-        Console.WriteLine("\n=== Задание 2 ===");
+        Console.WriteLine("\nTask 2");
         await Task2_AsyncSourcesAndPrimes();
 
-        Console.WriteLine("\n=== Задание 3 ===");
+        Console.WriteLine("\nTask 3");
         await Task3_ErrorsAndCancellation();
 
-        Console.WriteLine("\n=== Задание 4 ===");
+        Console.WriteLine("\nTask 4");
         await Task4_SemaphoreSlim();
 
-        Console.WriteLine("\n=== Задание 5 ===");
+        Console.WriteLine("\nTask 5");
         await Task5_WorkQueueAndStats();
 
-        Console.WriteLine("\n=== Задание 6 ===");
+        Console.WriteLine("\nTask 6");
         Task6_ParallelCalculations();
 
-        Console.WriteLine("\n=== Задание 7 ===");
+        Console.WriteLine("\nTask 7");
         await Task7_AsyncEnumerable();
 
-        Console.WriteLine("\n=== Задание 8 ===");
+        Console.WriteLine("\nTask 8");
         await Task8_ValueTaskAndTcs();
 
-        Console.WriteLine("\n=== Задание 9 ===");
+        Console.WriteLine("\nTask 9");
         await Task9_SynchronizationContext();
 
-        Console.WriteLine("\nВсе задания завершены.");
+        Console.WriteLine("\nCompleted.");
     }
 
-    #region Задание 1: Два независимых потока (Вариант 3)
-    // Входная строка: «C# async 2026». Буквы (6) и цифры (4).
+    #region Task1 1 (Variant 3)
     private static void Task1_TwoThreads()
     {
         const string input = "C# async 2026";
         int letterCount = 0;
         int digitCount = 0;
 
-        // Поток подсчета букв
         Thread letterThread = new Thread(() =>
         {
             Console.WriteLine("[Буквы] Начало работы.");
@@ -56,7 +54,6 @@ internal class Program
             Console.WriteLine("[Буквы] Конец работы.");
         });
 
-        // Поток подсчета цифр
         Thread digitThread = new Thread(() =>
         {
             Console.WriteLine("[Цифры] Начало работы.");
@@ -65,7 +62,6 @@ internal class Program
             Console.WriteLine("[Цифры] Конец работы.");
         });
 
-        // Запуск обоих потоков до ожидания Join
         letterThread.Start();
         digitThread.Start();
 
@@ -76,9 +72,8 @@ internal class Program
     }
     #endregion
 
-    #region Задание 2: Получение данных и вычисление результата (Вариант 3)
-    // Источники {2, 3}, {4, 5}, {6, 7} с задержками 300, 100, 200 мс. 
-    // Найти простые числа через Task.Run.
+    #region Task 2 (Variant 3)
+
     private static async Task Task2_AsyncSourcesAndPrimes()
     {
         async Task<int[]> SourceAsync(int delayMs, int[] data)
@@ -93,16 +88,13 @@ internal class Program
 
         var allTasks = new[] { task1, task2, task3 };
 
-        // 1. Ожидаем первый завершившийся через WhenAny
         Task<int[]> firstTask = await Task.WhenAny(allTasks);
         int[] firstResult = await firstTask;
         Console.WriteLine($"Первый полученный набор: [{string.Join(", ", firstResult)}]");
 
-        // 2. Ожидаем все наборы через WhenAll
         int[][] allResults = await Task.WhenAll(allTasks);
         int[] mergedData = allResults.SelectMany(x => x).ToArray();
 
-        // 3. Вычисление простых чисел через Task.Run (проверка делителями)
         var primes = await Task.Run(() =>
         {
             bool IsPrime(int n)
@@ -122,15 +114,13 @@ internal class Program
     }
     #endregion
 
-    #region Задание 3: Ошибки и отмена группы операций (Вариант 2)
-    // 100/d для d in {5, 0, 4}. Задержка Delay(100, token).
-    // Без отмены, с заранее отмененным токеном, с CancelAfter(50).
+    #region Task 3 (Variant 2)
     private static async Task Task3_ErrorsAndCancellation()
     {
         async Task<int> DivideOpAsync(int d, CancellationToken token)
         {
             await Task.Delay(100, token);
-            return 100 / d; // При d == 0 вызовет DivideByZeroException
+            return 100 / d;
         }
 
         async Task RunExperiment(string label, CancellationToken token)
@@ -145,7 +135,7 @@ internal class Program
             }
             catch (Exception)
             {
-                // Исключение поглощается для дальнейшего подробного анализа каждого таска
+                // Exception
             }
 
             for (int i = 0; i < tasks.Length; i++)
@@ -166,7 +156,6 @@ internal class Program
                 }
             }
 
-            // Получение полного набора ошибок через aggregate task
             var aggregateTask = Task.WhenAll(tasks);
             if (aggregateTask.Exception != null)
             {
@@ -178,23 +167,19 @@ internal class Program
             }
         }
 
-        // 1. Запуск без отмены
         await RunExperiment("Запуск 1: Без отмены", CancellationToken.None);
 
-        // 2. Запуск с заранее отмененным токеном
         using var preCanceledCts = new CancellationTokenSource();
         preCanceledCts.Cancel();
         await RunExperiment("Запуск 2: С заранее отмененным токеном", preCanceledCts.Token);
 
-        // 3. Запуск с CancelAfter(50)
         using var timeoutCts = new CancellationTokenSource();
         timeoutCts.CancelAfter(50);
         await RunExperiment("Запуск 3: С CancelAfter(50)", timeoutCts.Token);
     }
     #endregion
 
-    #region Задание 4: Доступ к ограниченному ресурсу (Вариант 3)
-    // SemaphoreSlim(2), 8 запросов, Delay(100), отслеживание через Interlocked.
+    #region Task 4 (Variant 3)
     private static async Task Task4_SemaphoreSlim()
     {
         using var semaphore = new SemaphoreSlim(2, 2);
@@ -211,7 +196,6 @@ internal class Program
                 await semaphore.WaitAsync();
                 try
                 {
-                    // Увеличиваем счетчик и фиксируем максимум
                     int current = Interlocked.Increment(ref activeCount);
 
                     int initialMax, newMax;
@@ -238,8 +222,7 @@ internal class Program
     }
     #endregion
 
-    #region Задание 5: Очередь работы и общая статистика (Вариант 3)
-    // ConcurrentQueue (1..100), 3 воркера, ConcurrentDictionary (остатки 0, 1, 2 от деления на 3).
+    #region Task 5 (Variant 3)
     private static async Task Task5_WorkQueueAndStats()
     {
         var queue = new ConcurrentQueue<int>(Enumerable.Range(1, 100));
@@ -273,32 +256,27 @@ internal class Program
     }
     #endregion
 
-    #region Задание 6: Независимые вычисления через Parallel (Вариант 1)
-    // Квадраты чисел 1..100 в long[]. Parallel.For, Parallel.ForEach + Interlocked.Add. Сумма = 338350.
+    #region Task 6 (Variant 1)
     private static void Task6_ParallelCalculations()
     {
         long[] seqArray = new long[100];
         long[] parArray = new long[100];
 
-        // 1. Обычный цикл
         for (int i = 0; i < 100; i++)
         {
             long n = i + 1;
             seqArray[i] = n * n;
         }
 
-        // 2. Parallel.For
         Parallel.For(0, 100, i =>
         {
             long n = i + 1;
             parArray[i] = n * n;
         });
 
-        // 3. Сравнение массивов
         bool areEqual = seqArray.SequenceEqual(parArray);
         Console.WriteLine($"Массивы совпадают: {areEqual}");
 
-        // 4. Подсчет суммы через Parallel.ForEach и Interlocked.Add
         long totalSum = 0;
         Parallel.ForEach(parArray, val =>
         {
@@ -309,9 +287,7 @@ internal class Program
     }
     #endregion
 
-    #region Задание 7: Данные по мере поступления (Вариант 1)
-    // IAsyncEnumerable<int> выдает 1..5 с задержкой 100 мс.
-    // 1) Полный проход (сумма 15); 2) Break после 3 (сумма 6); 3) CancelAfter(250).
+    #region Task 7 (Variant 1)
     private static async Task Task7_AsyncEnumerable()
     {
         static async IAsyncEnumerable<int> GenerateNumbersAsync([EnumeratorCancellation] CancellationToken token = default)
@@ -323,7 +299,6 @@ internal class Program
             }
         }
 
-        // 1. Полный проход
         Console.WriteLine("1. Полный проход:");
         int sumFull = 0;
         await foreach (var item in GenerateNumbersAsync())
@@ -333,7 +308,6 @@ internal class Program
         }
         Console.WriteLine($"   Результат полного прохода: сумма = {sumFull}");
 
-        // 2. Проход с break после третьего элемента
         Console.WriteLine("\n2. Проход с прерыванием (break после 3-го элемента):");
         int sumBreak = 0;
         await foreach (var item in GenerateNumbersAsync())
@@ -348,7 +322,6 @@ internal class Program
         }
         Console.WriteLine($"   Результат: сумма = {sumBreak}");
 
-        // 3. Проход с CancelAfter(250)
         Console.WriteLine("\n3. Проход с CancelAfter(250):");
         int sumCancel = 0;
         using var cts = new CancellationTokenSource();
@@ -369,21 +342,16 @@ internal class Program
     }
     #endregion
 
-    #region Задание 8: Готовый результат и внешний сигнал (Вариант 3)
-    // T = double. ValueTask<double>, ValueTask без результата (CompletedTask). 
-    // TaskCompletionSource<double> в отдельном потоке.
+    #region Task 8 (Variant 3)
     private static async Task Task8_ValueTaskAndTcs()
     {
-        // Часть А: ValueTask<double>
         static ValueTask<double> GetDoubleAsync(bool isReady, double value)
         {
             if (isReady)
             {
-                // Возврат готового значения сразу без выделения Task в куче
                 return new ValueTask<double>(value);
             }
 
-            // Асинхронное выполнение
             async Task<double> DelayedAsync()
             {
                 await Task.Delay(100);
@@ -395,23 +363,20 @@ internal class Program
 
         static ValueTask DoEmptyWorkAsync()
         {
-            // Возврат ValueTask без результата
             return ValueTask.CompletedTask;
         }
 
-        // Вызовы и однократные await
         double res1 = await GetDoubleAsync(true, 3.14);
         double res2 = await GetDoubleAsync(false, 2.71);
         await DoEmptyWorkAsync();
 
         Console.WriteLine($"Часть А: res1 = {res1}, res2 = {res2}");
 
-        // Часть Б: TaskCompletionSource<double> и отдельный поток
         var tcs = new TaskCompletionSource<double>();
         var thread = new Thread(() =>
         {
             Thread.Sleep(100);
-            tcs.SetResult(42.5); // Сигнал и передача результата
+            tcs.SetResult(42.5);
         });
 
         thread.Start();
@@ -421,9 +386,7 @@ internal class Program
     }
     #endregion
 
-    #region Задание 9: Контекст продолжения (Вариант 1)
-    // Метод возвращает Task<int> с задержкой 100 мс и результатом 42.
-    // ConfigureAwait(true) и ConfigureAwait(false). Логирование Environment.CurrentManagedThreadId.
+    #region Task 9 (Variant 1)
     private static async Task Task9_SynchronizationContext()
     {
         static async Task<int> Compute42Async()
@@ -434,17 +397,14 @@ internal class Program
 
         Console.WriteLine("--- Консольный контекст по умолчанию (SynchronizationContext.Current == null) ---");
 
-        // Режим ConfigureAwait(true)
         Console.WriteLine($"[ConfigureAwait(true)]  До await: Thread ID = {Environment.CurrentManagedThreadId}");
         int resTrue = await Compute42Async().ConfigureAwait(true);
         Console.WriteLine($"[ConfigureAwait(true)]  После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resTrue}");
 
-        // Режим ConfigureAwait(false)
         Console.WriteLine($"[ConfigureAwait(false)] До await: Thread ID = {Environment.CurrentManagedThreadId}");
         int resFalse = await Compute42Async().ConfigureAwait(false);
         Console.WriteLine($"[ConfigureAwait(false)] После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resFalse}");
 
-        // Демонстрация с установленным SynchronizationContext (как в UI/WPF/WinForms)
         Console.WriteLine("\n--- Эксперимент с кастомным SynchronizationContext ---");
         var customContext = new SingleThreadSynchronizationContext();
         SynchronizationContext.SetSynchronizationContext(customContext);
@@ -453,11 +413,9 @@ internal class Program
         {
             Console.WriteLine($"[С Контекстом] До await: Thread ID = {Environment.CurrentManagedThreadId}");
 
-            // С true контекст восстанавливается (пост в очередь контекста)
             int resCtx = await Compute42Async().ConfigureAwait(true);
             Console.WriteLine($"[С Контекстом (true)] После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resCtx}");
 
-            // С false контекст игнорируется и продолжение выполняется в потоке пула
             int resNoCtx = await Compute42Async().ConfigureAwait(false);
             Console.WriteLine($"[С Контекстом (false)] После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resNoCtx}");
         }
@@ -468,7 +426,6 @@ internal class Program
         }
     }
 
-    // Вспомогательный контекст для наглядной демонстрации влияния ConfigureAwait
     private class SingleThreadSynchronizationContext : SynchronizationContext
     {
         private readonly BlockingCollection<(SendOrPostCallback Callback, object? State)> _queue = new();
