@@ -278,7 +278,6 @@ void RunTask16()
     Console.WriteLine("\n4. First / Single:");
     var firstTesting = taskList.FirstOrDefault(t => t.Category == TaskCategory.Testing);
     Console.WriteLine($"   First testing task: {(firstTesting != null ? firstTesting.Title : "not found")}");
-FirstOrDefault
     Console.WriteLine("\n5. Statistics: Count, Min, Max, Average, Sum:");
     Console.WriteLine($"   Total tasks (Count): {taskList.Count}");
     Console.WriteLine($"   Minimum hours (Min): {taskList.Min(t => t.EstimatedHours):F1} ч.");
