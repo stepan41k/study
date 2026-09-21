@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 3,
   "targets": {
     "net9.0": {}
   },
@@ -8,37 +8,29 @@
     "net9.0": []
   },
   "packageFolders": {
-    "C:\\Users\\stepan41k\\.nuget\\packages\\": {},
-    "D:\\Programs\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/home/stepan41k/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Code\\go\\go1.22.2\\src\\sandbox\\Study\\Sharp\\lab2\\lab2.csproj",
+      "projectUniqueName": "/home/stepan41k/Documents/workspace/study/Sharp/lab2/lab2.csproj",
       "projectName": "lab2",
-      "projectPath": "D:\\Code\\go\\go1.22.2\\src\\sandbox\\Study\\Sharp\\lab2\\lab2.csproj",
-      "packagesPath": "C:\\Users\\stepan41k\\.nuget\\packages\\",
-      "outputPath": "D:\\Code\\go\\go1.22.2\\src\\sandbox\\Study\\Sharp\\lab2\\obj\\",
+      "projectPath": "/home/stepan41k/Documents/workspace/study/Sharp/lab2/lab2.csproj",
+      "packagesPath": "/home/stepan41k/.nuget/packages/",
+      "outputPath": "/home/stepan41k/Documents/workspace/study/Sharp/lab2/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "D:\\Programs\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\stepan41k\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/stepan41k/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
+        "/home/stepan41k/.dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
-          "framework": "net9.0",
           "targetAlias": "net9.0",
           "projectReferences": {}
         }
@@ -53,11 +45,10 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.400"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
-        "framework": "net9.0",
         "targetAlias": "net9.0",
         "imports": [
           "net461",
@@ -75,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/home/stepan41k/.dotnet/sdk/9.0.318/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -48,18 +48,18 @@ internal class Program
 
         Thread letterThread = new Thread(() =>
         {
-            Console.WriteLine("[Буквы] Начало работы.");
+            Console.WriteLine("[Letters] Start execution");
             Thread.Sleep(100);
             letterCount = input.Count(char.IsLetter);
-            Console.WriteLine("[Буквы] Конец работы.");
+            Console.WriteLine("[Letters] End execution");
         });
 
         Thread digitThread = new Thread(() =>
         {
-            Console.WriteLine("[Цифры] Начало работы.");
+            Console.WriteLine("[Digits] Start execution");
             Thread.Sleep(100);
             digitCount = input.Count(char.IsDigit);
-            Console.WriteLine("[Цифры] Конец работы.");
+            Console.WriteLine("[Digits] End execution");
         });
 
         letterThread.Start();
@@ -68,7 +68,7 @@ internal class Program
         letterThread.Join();
         digitThread.Join();
 
-        Console.WriteLine($"Результат: Букв = {letterCount}, Цифр = {digitCount}");
+        Console.WriteLine($"Result: Letters = {letterCount}, Digits = {digitCount}");
     }
     #endregion
 
@@ -90,7 +90,7 @@ internal class Program
 
         Task<int[]> firstTask = await Task.WhenAny(allTasks);
         int[] firstResult = await firstTask;
-        Console.WriteLine($"Первый полученный набор: [{string.Join(", ", firstResult)}]");
+        Console.WriteLine($"First received set: [{string.Join(", ", firstResult)}]");
 
         int[][] allResults = await Task.WhenAll(allTasks);
         int[] mergedData = allResults.SelectMany(x => x).ToArray();
@@ -110,7 +110,7 @@ internal class Program
             return mergedData.Where(IsPrime).ToList();
         });
 
-        Console.WriteLine($"Простые числа: {string.Join(", ", primes)}; количество: {primes.Count}");
+        Console.WriteLine($"Prime numbers: {string.Join(", ", primes)}; count: {primes.Count}");
     }
     #endregion
 
@@ -141,25 +141,25 @@ internal class Program
             for (int i = 0; i < tasks.Length; i++)
             {
                 var t = tasks[i];
-                Console.Write($"Задача #{i + 1} (d={divisors[i]}): Статус = {t.Status}");
+                Console.Write($"Task #{i + 1} (d={divisors[i]}): Status = {t.Status}");
                 if (t.IsCompletedSuccessfully)
                 {
-                    Console.WriteLine($", Результат = {t.Result}");
+                    Console.WriteLine($", Result = {t.Result}");
                 }
                 else if (t.IsFaulted)
                 {
-                    Console.WriteLine($", Ошибка = {t.Exception?.InnerException?.GetType().Name}: {t.Exception?.InnerException?.Message}");
+                    Console.WriteLine($", Error = {t.Exception?.InnerException?.GetType().Name}: {t.Exception?.InnerException?.Message}");
                 }
                 else if (t.IsCanceled)
                 {
-                    Console.WriteLine(", Отменена (Canceled)");
+                    Console.WriteLine(", Canceled");
                 }
             }
 
             var aggregateTask = Task.WhenAll(tasks);
             if (aggregateTask.Exception != null)
             {
-                Console.WriteLine("Ошибки из InnerExceptions:");
+                Console.WriteLine("Errors from InnerExceptions:");
                 foreach (var ex in aggregateTask.Exception.InnerExceptions)
                 {
                     Console.WriteLine($" - {ex.GetType().Name}: {ex.Message}");
@@ -167,15 +167,15 @@ internal class Program
             }
         }
 
-        await RunExperiment("Запуск 1: Без отмены", CancellationToken.None);
+        await RunExperiment("Try 1: Without cancellation", CancellationToken.None);
 
         using var preCanceledCts = new CancellationTokenSource();
         preCanceledCts.Cancel();
-        await RunExperiment("Запуск 2: С заранее отмененным токеном", preCanceledCts.Token);
+        await RunExperiment("Try 2: With pre-canceled token", preCanceledCts.Token);
 
         using var timeoutCts = new CancellationTokenSource();
         timeoutCts.CancelAfter(50);
-        await RunExperiment("Запуск 3: С CancelAfter(50)", timeoutCts.Token);
+        await RunExperiment("Try 3: With CancelAfter(50)", timeoutCts.Token);
     }
     #endregion
 
@@ -205,9 +205,9 @@ internal class Program
                         newMax = Math.Max(initialMax, current);
                     } while (Interlocked.CompareExchange(ref maxActiveCount, newMax, initialMax) != initialMax);
 
-                    Console.WriteLine($"[Запрос {requestId}] Начало обслуживания (активно: {current})");
+                    Console.WriteLine($"[Request {requestId}] Starting обслуживания (active: {current})");
                     await Task.Delay(100);
-                    Console.WriteLine($"[Запрос {requestId}] Окончание обслуживания");
+                    Console.WriteLine($"[Request {requestId}] Finished обслуживания");
                 }
                 finally
                 {
@@ -218,7 +218,7 @@ internal class Program
         }
 
         await Task.WhenAll(requests);
-        Console.WriteLine($"Все 8 запросов выполнены. Максимальное одновременное количество: {maxActiveCount}");
+        Console.WriteLine($"All 8 requests completed. Max active count: {maxActiveCount}");
     }
     #endregion
 
@@ -247,11 +247,11 @@ internal class Program
 
         await Task.WhenAll(workers);
 
-        Console.WriteLine($"Общий счётчик обработанных элементов: {totalProcessed}");
-        Console.WriteLine("Отсортированные категории (остаток : количество):");
+        Console.WriteLine($"Total processed: {totalProcessed}");
+        Console.WriteLine("Sorted categories (remainder : count):");
         foreach (var kvp in stats.OrderBy(x => x.Key))
         {
-            Console.WriteLine($"  Остаток {kvp.Key} => {kvp.Value}");
+            Console.WriteLine($"  Remainder {kvp.Key} => {kvp.Value}");
         }
     }
     #endregion
@@ -275,7 +275,7 @@ internal class Program
         });
 
         bool areEqual = seqArray.SequenceEqual(parArray);
-        Console.WriteLine($"Массивы совпадают: {areEqual}");
+        Console.WriteLine($"Arrays are equal: {areEqual}");
 
         long totalSum = 0;
         Parallel.ForEach(parArray, val =>
@@ -283,7 +283,7 @@ internal class Program
             Interlocked.Add(ref totalSum, val);
         });
 
-        Console.WriteLine($"Итоговая сумма: {totalSum} (Ожидается: 338350)");
+        Console.WriteLine($"Result sum: {totalSum} (Expected: 338350)");
     }
     #endregion
 
@@ -299,30 +299,30 @@ internal class Program
             }
         }
 
-        Console.WriteLine("1. Полный проход:");
+        Console.WriteLine("1. Full pass:");
         int sumFull = 0;
         await foreach (var item in GenerateNumbersAsync())
         {
             sumFull += item;
-            Console.WriteLine($"   Получено: {item}, Текущая сумма: {sumFull}");
+            Console.WriteLine($"   Received: {item}, Current sum: {sumFull}");
         }
-        Console.WriteLine($"   Результат полного прохода: сумма = {sumFull}");
+        Console.WriteLine($"   Result full pass: sum = {sumFull}");
 
-        Console.WriteLine("\n2. Проход с прерыванием (break после 3-го элемента):");
+        Console.WriteLine("\n2. Break after 3rd element:");
         int sumBreak = 0;
         await foreach (var item in GenerateNumbersAsync())
         {
             sumBreak += item;
-            Console.WriteLine($"   Получено: {item}, Текущая сумма: {sumBreak}");
+            Console.WriteLine($"   Received: {item}, Current sum: {sumBreak}");
             if (item == 3)
             {
-                Console.WriteLine("   Прерывание цикла по break.");
+                Console.WriteLine("   Break loop by break.");
                 break;
             }
         }
-        Console.WriteLine($"   Результат: сумма = {sumBreak}");
+        Console.WriteLine($"   Result: sum = {sumBreak}");
 
-        Console.WriteLine("\n3. Проход с CancelAfter(250):");
+        Console.WriteLine("\n3. CancelAfter(250):");
         int sumCancel = 0;
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(250);
@@ -332,12 +332,12 @@ internal class Program
             await foreach (var item in GenerateNumbersAsync().WithCancellation(cts.Token))
             {
                 sumCancel += item;
-                Console.WriteLine($"   Получено: {item}, Текущая сумма: {sumCancel}");
+                Console.WriteLine($"   Received: {item}, Current sum: {sumCancel}");
             }
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine($"   [Отмена] Операция была отменена токеном. Частичная сумма: {sumCancel}");
+            Console.WriteLine($"   [Cancel] Operation was canceled by token. Partial sum: {sumCancel}");
         }
     }
     #endregion
@@ -370,7 +370,7 @@ internal class Program
         double res2 = await GetDoubleAsync(false, 2.71);
         await DoEmptyWorkAsync();
 
-        Console.WriteLine($"Часть А: res1 = {res1}, res2 = {res2}");
+        Console.WriteLine($"Part А: res1 = {res1}, res2 = {res2}");
 
         var tcs = new TaskCompletionSource<double>();
         var thread = new Thread(() =>
@@ -382,7 +382,7 @@ internal class Program
         thread.Start();
 
         double externalResult = await tcs.Task;
-        Console.WriteLine($"Часть Б: Результат из TaskCompletionSource = {externalResult}");
+        Console.WriteLine($"Part Б: Result from TaskCompletionSource = {externalResult}");
     }
     #endregion
 
@@ -395,29 +395,29 @@ internal class Program
             return 42;
         }
 
-        Console.WriteLine("--- Консольный контекст по умолчанию (SynchronizationContext.Current == null) ---");
+        Console.WriteLine("--- Console context (SynchronizationContext.Current == null) ---");
 
-        Console.WriteLine($"[ConfigureAwait(true)]  До await: Thread ID = {Environment.CurrentManagedThreadId}");
+        Console.WriteLine($"[ConfigureAwait(true)]  Before await: Thread ID = {Environment.CurrentManagedThreadId}");
         int resTrue = await Compute42Async().ConfigureAwait(true);
-        Console.WriteLine($"[ConfigureAwait(true)]  После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resTrue}");
+        Console.WriteLine($"[ConfigureAwait(true)]  After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resTrue}");
 
-        Console.WriteLine($"[ConfigureAwait(false)] До await: Thread ID = {Environment.CurrentManagedThreadId}");
+        Console.WriteLine($"[ConfigureAwait(false)] Before await: Thread ID = {Environment.CurrentManagedThreadId}");
         int resFalse = await Compute42Async().ConfigureAwait(false);
-        Console.WriteLine($"[ConfigureAwait(false)] После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resFalse}");
+        Console.WriteLine($"[ConfigureAwait(false)] After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resFalse}");
 
-        Console.WriteLine("\n--- Эксперимент с кастомным SynchronizationContext ---");
+        Console.WriteLine("\n--- Experiment with custom SynchronizationContext ---");
         var customContext = new SingleThreadSynchronizationContext();
         SynchronizationContext.SetSynchronizationContext(customContext);
 
         try
         {
-            Console.WriteLine($"[С Контекстом] До await: Thread ID = {Environment.CurrentManagedThreadId}");
+            Console.WriteLine($"[With Context] Before await: Thread ID = {Environment.CurrentManagedThreadId}");
 
             int resCtx = await Compute42Async().ConfigureAwait(true);
-            Console.WriteLine($"[С Контекстом (true)] После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resCtx}");
+            Console.WriteLine($"[With Context (true)] After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resCtx}");
 
             int resNoCtx = await Compute42Async().ConfigureAwait(false);
-            Console.WriteLine($"[С Контекстом (false)] После await: Thread ID = {Environment.CurrentManagedThreadId}, Результат = {resNoCtx}");
+            Console.WriteLine($"[With Context (false)] After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resNoCtx}");
         }
         finally
         {
