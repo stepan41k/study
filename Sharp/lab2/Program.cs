@@ -125,7 +125,7 @@ internal class Program
 
         async Task RunExperiment(string label, CancellationToken token)
         {
-            Console.WriteLine($"\n--- {label} ---");
+            Console.WriteLine($"\n{label}");
             int[] divisors = { 5, 0, 4 };
             var tasks = divisors.Select(d => DivideOpAsync(d, token)).ToArray();
 
@@ -162,7 +162,7 @@ internal class Program
                 Console.WriteLine("Errors from InnerExceptions:");
                 foreach (var ex in aggregateTask.Exception.InnerExceptions)
                 {
-                    Console.WriteLine($" - {ex.GetType().Name}: {ex.Message}");
+                    Console.WriteLine($"{ex.GetType().Name}: {ex.Message}");
                 }
             }
         }
@@ -395,7 +395,7 @@ internal class Program
             return 42;
         }
 
-        Console.WriteLine("--- Console context (SynchronizationContext.Current == null) ---");
+        Console.WriteLine("Console context (SynchronizationContext.Current == null)");
 
         Console.WriteLine($"[ConfigureAwait(true)]  Before await: Thread ID = {Environment.CurrentManagedThreadId}");
         int resTrue = await Compute42Async().ConfigureAwait(true);
@@ -405,7 +405,7 @@ internal class Program
         int resFalse = await Compute42Async().ConfigureAwait(false);
         Console.WriteLine($"[ConfigureAwait(false)] After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resFalse}");
 
-        Console.WriteLine("\n--- Experiment with custom SynchronizationContext ---");
+        Console.WriteLine("\nExperiment with custom SynchronizationContext");
         var customContext = new SingleThreadSynchronizationContext();
         SynchronizationContext.SetSynchronizationContext(customContext);
 
