@@ -19,7 +19,6 @@ public sealed class ExpenseCategory : IEquatable<ExpenseCategory>
         Title = title.Trim();
     }
 
-    // Предметное равенство строго по коду категории
     public bool Equals(ExpenseCategory? other)
     {
         if (other is null) return false;

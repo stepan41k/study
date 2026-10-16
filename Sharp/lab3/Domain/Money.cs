@@ -12,7 +12,6 @@ public readonly struct Money : IEquatable<Money>, IComparable<Money>
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount), "Сумма не может быть отрицательной.");
 
-        // Обработка возможного переполнения через checked
         checked
         {
             Cents = (long)Math.Round(amount * 100m, MidpointRounding.AwayFromZero);
@@ -23,7 +22,6 @@ public readonly struct Money : IEquatable<Money>, IComparable<Money>
 
     public decimal ToDecimal() => Cents / 100m;
 
-    // Сложение без изменения операндов
     public static Money operator +(Money left, Money right)
     {
         checked
@@ -32,14 +30,11 @@ public readonly struct Money : IEquatable<Money>, IComparable<Money>
         }
     }
 
-    // Пара операторов сравнения > и <
     public static bool operator <(Money left, Money right) => left.Cents < right.Cents;
     public static bool operator >(Money left, Money right) => left.Cents > right.Cents;
 
-    // Неявное преобразование в исходный числовой тип decimal
     public static implicit operator decimal(Money m) => m.ToDecimal();
 
-    // Явное преобразование из decimal с проверкой допустимости
     public static explicit operator Money(decimal value)
     {
         if (value < 0)

@@ -2,11 +2,9 @@
 using System.Text;
 
 Console.OutputEncoding = Encoding.UTF8;
-Console.WriteLine("================================================================================");
-Console.WriteLine("  ПРАКТИЧЕСКАЯ РАБОТА: ПРИКЛАДНАЯ МОДЕЛЬ «УЧЁТ ЛИЧНЫХ ФИНАНСОВ» (C#)");
-Console.WriteLine("================================================================================\n");
+Console.WriteLine("  ПРАКТИЧЕСКАЯ РАБОТА: ООП C#   ");
+Console.WriteLine("\n");
 
-// Выполнение обязательных демонстраций
 DemoPropertiesAndCreation();      // 2.3.1
 DemoInheritanceAndPolymorphism(); // 2.3.2
 DemoInterfaces();                 // 2.3.3
@@ -18,14 +16,10 @@ DemoExtensionsAndPartial();       // 2.3.8
 DemoRecordAndAnonymousSummary();  // 2.3.9
 RunFinalEndToEndScenario();       // 2.4
 
-Console.WriteLine("\n[✔] Все демонстрации успешно завершены без прерывания программы!");
+Console.WriteLine("\nSuccess!");
 return;
 
-// ================================================================================================
-// МЕТОДЫ ДЕМОНСТРАЦИИ ПО ПУНКТАМ
-// ================================================================================================
-
-// --- 2.3.1 Свойства и создание объектов ---
+// 2.3.1 Свойства и создание объектов
 static void DemoPropertiesAndCreation()
 {
     PrintHeader("2.3.1 Свойства и создание объектов");
@@ -39,35 +33,35 @@ static void DemoPropertiesAndCreation()
         Tag = "Супермаркет"
     };
 
-    Console.WriteLine($"[OK] Создан объект: Id={tx.Id}, Сумма={tx.Amount}, Дата={tx.CreatedAt:yyyy-MM-dd}, IsFresh={tx.IsFresh}");
+    Console.WriteLine($"Создан объект: Id={tx.Id}, Сумма={tx.Amount}, Дата={tx.CreatedAt:yyyy-MM-dd}, IsFresh={tx.IsFresh}");
 
     tx.Amount = (Money)1850.50m;
-    Console.WriteLine($"[OK] Допустимое изменение Amount: {tx.Amount}");
+    Console.WriteLine($"Допустимое изменение Amount: {tx.Amount}");
 
     try
     {
-        Console.WriteLine("[ТЕСТ ОШИБКИ] Попытка установить некорректную сумму (0 руб.)...");
+        Console.WriteLine("Попытка установить некорректную сумму (0 руб.)...");
         tx.Amount = (Money)0m;
     }
     catch (ArgumentException ex)
     {
-        Console.WriteLine($"  -> Ошибка перехвачена: {ex.Message}");
-        Console.WriteLine($"  -> Состояние не испорчено, текущая сумма: {tx.Amount}");
+        Console.WriteLine($" Ошибка перехвачена: {ex.Message}");
+        Console.WriteLine($" Состояние не испорчено, текущая сумма: {tx.Amount}");
     }
 
     /*
-     * Закомментированные примеры диагностик компилятора:
-     * 1. Не задан обязательный required-член:
+     * Примеры диагностик компилятора:
+     * 1. Не задан обязательный required:
      * var invalid = new ExpenseTransaction((Money)100m, foodCat);
      * // ОШИБКА CS9035: Required member 'FinancialTransaction.Id' must be set in the object initializer.
      *
-     * 2. Изменение init-свойства после создания:
+     * 2. Изменение init свойства после создания:
      * tx.CreatedAt = DateTime.Now;
      * // ОШИБКА CS8852: Init-only property 'FinancialTransaction.CreatedAt' can only be assigned in an object initializer.
      */
 }
 
-// --- 2.3.2 Наследование и полиморфизм ---
+// 2.3.2 Наследование и полиморфизм
 static void DemoInheritanceAndPolymorphism()
 {
     PrintHeader("2.3.2 Наследование и полиморфизм");
@@ -79,18 +73,18 @@ static void DemoInheritanceAndPolymorphism()
         new IncomeTransaction((Money)120000m, "Зарплатный проект") { Id = "TX-I1", CreatedAt = DateTime.Now }
     };
 
-    Console.WriteLine("--- Вызов override-методов в едином цикле по базовому типу ---");
+    Console.WriteLine("Вызов override-методов в едином цикле по базовому типу");
     foreach (var tx in transactions)
     {
         Console.WriteLine($"Тип: {tx.GetOperationType()} | Лог: {tx.GetAuditLog()}");
 
         if (tx is ExpenseTransaction { IsTaxDeductible: true } expense)
         {
-            Console.WriteLine($"  -> [Pattern Matching]: Найден расход с налоговым вычетом (Сумма: {expense.Amount})");
+            Console.WriteLine($"Найден расход с налоговым вычетом (Сумма: {expense.Amount})");
         }
     }
 
-    Console.WriteLine("\n--- Эксперимент с сокрытием методов (new vs override) ---");
+    Console.WriteLine("\nЭксперимент с сокрытием методов (new vs override)");
     var specificExpense = new ExpenseTransaction((Money)200m, cat) { Id = "TX-EXP", CreatedAt = DateTime.Now };
     FinancialTransaction baseRef = specificExpense;
 
@@ -98,7 +92,7 @@ static void DemoInheritanceAndPolymorphism()
     Console.WriteLine($"Вызов через базовую ссылку   : {baseRef.PrintHeader()}");
 }
 
-// --- 2.3.3 Интерфейсы ---
+// 2.3.3 Интерфейсы
 static void DemoInterfaces()
 {
     PrintHeader("2.3.3 Интерфейсы (Явная реализация и Default Interface Methods)");
@@ -119,19 +113,19 @@ static void DemoInterfaces()
 
     try
     {
-        Console.WriteLine("[ТЕСТ ОШИБКИ] Повторная отмена транзакции...");
+        Console.WriteLine("Повторная отмена транзакции...");
         expense.Cancel("Повторная отмена");
     }
     catch (InvalidOperationException ex)
     {
-        Console.WriteLine($"  -> Ошибка перехвачена: {ex.Message}");
+        Console.WriteLine($" Ошибка перехвачена: {ex.Message}");
     }
 
     static void PrintAnySummary(ISummarizable item) =>
-        Console.WriteLine($"[PrintAnySummary]: {item.GetBriefSummary()}");
+        Console.WriteLine($"PrintAnySummary: {item.GetBriefSummary()}");
 }
 
-// --- 2.3.4 Обобщённый контейнер и индексаторы ---
+// 2.3.4 Обобщённый контейнер и индексаторы
 static void DemoCatalogAndIndexers()
 {
     PrintHeader("2.3.4 Обобщённый контейнер и индексаторы");
@@ -146,7 +140,7 @@ static void DemoCatalogAndIndexers()
 
     Console.WriteLine($"В каталог добавлено {catalog.Count} объектов.");
     Console.WriteLine($"Индексатор по номеру [0]: {catalog[0]}");
-    Console.WriteLine($"Индексатор по Id [\"T3\"]: {catalog["T3"]}");
+    Console.WriteLine($"Индексатор по Id \"T3\": {catalog["T3"]}");
 
     bool addedAgain = catalog.Add(new ExpenseTransaction((Money)10m, cat) { Id = "T1", CreatedAt = DateTime.Now });
     Console.WriteLine($"Попытка добавить дубликат Id 'T1': {(addedAgain ? "Успех" : "Отклонено (Корректно)")}");
@@ -156,16 +150,16 @@ static void DemoCatalogAndIndexers()
 
     try
     {
-        Console.WriteLine("[ТЕСТ ОШИБКИ] Обращение по индексу 99...");
+        Console.WriteLine("ОШИБКА Обращение по индексу 99...");
         var _ = catalog[99];
     }
     catch (ArgumentOutOfRangeException ex)
     {
-        Console.WriteLine($"  -> Ошибка индексатора перехвачена: {ex.ParamName ?? "Параметр вне диапазона"}");
+        Console.WriteLine($" Ошибка индексатора перехвачена: {ex.ParamName ?? "Параметр вне диапазона"}");
     }
 }
 
-// --- 2.3.5 Ковариантность и контрвариантность ---
+// 2.3.5 Ковариантность и контрвариантность
 static void DemoVariance()
 {
     PrintHeader("2.3.5 Ковариантность (out) и контрвариантность (in)");
@@ -173,17 +167,15 @@ static void DemoVariance()
     var expenseSource = new SpecificExpenseSource();
     var baseHandler = new BaseTransactionHandler();
 
-    // out T (Ковариантность)
     ISource<FinancialTransaction> baseSource = expenseSource;
     FinancialTransaction item = baseSource.GetItem();
     Console.WriteLine($"[out T Ковариантность]: Получен элемент: {item.GetOperationType()} на сумму {item.Amount}");
 
-    // in T (Контрвариантность)
     IHandler<ExpenseTransaction> expenseHandler = baseHandler;
     expenseHandler.Handle((ExpenseTransaction)item);
 }
 
-// --- 2.3.6 Равенство и строковое представление ---
+// 2.3.6 Равенство и строковое представление
 static void DemoEquality()
 {
     PrintHeader("2.3.6 Равенство и строковое представление");
@@ -203,7 +195,7 @@ static void DemoEquality()
     Console.WriteLine($"Количество элементов в HashSet (ожидается 2): {set.Count}");
 }
 
-// --- 2.3.7 Операторы и преобразования ---
+// 2.3.7 Операторы и преобразования
 static void DemoOperatorsAndConversions()
 {
     PrintHeader("2.3.7 Операторы и пользовательские преобразования");
@@ -225,11 +217,11 @@ static void DemoOperatorsAndConversions()
     }
     catch (InvalidCastException ex)
     {
-        Console.WriteLine($"  -> Ошибка явного преобразования перехвачена: {ex.Message}");
+        Console.WriteLine($" Ошибка явного преобразования перехвачена: {ex.Message}");
     }
 }
 
-// --- 2.3.8 Расширения и partial ---
+// 2.3.8 Расширения и partial
 static void DemoExtensionsAndPartial()
 {
     PrintHeader("2.3.8 Методы расширения и Partial-классы");
@@ -250,7 +242,7 @@ static void DemoExtensionsAndPartial()
     Console.WriteLine($"Partial-метод отработал (LastStatusMessage): '{tx.LastStatusMessage}'");
 }
 
-// --- 2.3.9 Record и анонимная сводка ---
+// 2.3.9 Record и анонимная сводка
 static void DemoRecordAndAnonymousSummary()
 {
     PrintHeader("2.3.9 Record, неразрушающая мутация и анонимная сводка");
@@ -281,14 +273,14 @@ static void DemoRecordAndAnonymousSummary()
         FormattedTotal = tx.Amount.ToString()
     });
 
-    Console.WriteLine("\n--- Анонимная сводка «Название — Статус — Итог» ---");
+    Console.WriteLine("\nАнонимная сводка «Название — Статус — Итог»");
     foreach (var row in summary)
     {
         Console.WriteLine($"{row.Title} — {row.Kind} — Крупная: {row.IsSubstantial} — Итог: {row.FormattedTotal}");
     }
 }
 
-// --- 2.4 Итоговый сквозной сценарий ---
+// 2.4 Итоговый сквозной сценарий
 static void RunFinalEndToEndScenario()
 {
     PrintHeader("2.4 Итоговый сквозной сценарий работы пользователя");
@@ -332,14 +324,10 @@ static void RunFinalEndToEndScenario()
 
 static void PrintHeader(string title)
 {
-    Console.WriteLine($"\n--------------------------------------------------------------------------------");
-    Console.WriteLine($" >>> {title}");
-    Console.WriteLine($"--------------------------------------------------------------------------------");
+    Console.WriteLine($" > {title}");
 }
 
-// ================================================================================================
-// ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ ДЛЯ ПУНКТА 2.3.5 (ДОЛЖНЫ БЫТЬ СТРОГО В КОНЦЕ ФАЙЛА)
-// ================================================================================================
+// ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ ДЛЯ ПУНКТА 2.3.5
 
 class SpecificExpenseSource : ISource<ExpenseTransaction>
 {

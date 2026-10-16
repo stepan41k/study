@@ -48,18 +48,18 @@ internal class Program
 
         Thread letterThread = new Thread(() =>
         {
-            Console.WriteLine("[Letters] Start execution");
+            Console.WriteLine("Letters: Start execution");
             Thread.Sleep(100);
             letterCount = input.Count(char.IsLetter);
-            Console.WriteLine("[Letters] End execution");
+            Console.WriteLine("Letters: End execution");
         });
 
         Thread digitThread = new Thread(() =>
         {
-            Console.WriteLine("[Digits] Start execution");
+            Console.WriteLine("Digits: Start execution");
             Thread.Sleep(100);
             digitCount = input.Count(char.IsDigit);
-            Console.WriteLine("[Digits] End execution");
+            Console.WriteLine("Digits: End execution");
         });
 
         letterThread.Start();
@@ -90,7 +90,7 @@ internal class Program
 
         Task<int[]> firstTask = await Task.WhenAny(allTasks);
         int[] firstResult = await firstTask;
-        Console.WriteLine($"First received set: [{string.Join(", ", firstResult)}]");
+        Console.WriteLine($"First received set: {string.Join(", ", firstResult)}");
 
         int[][] allResults = await Task.WhenAll(allTasks);
         int[] mergedData = allResults.SelectMany(x => x).ToArray();
@@ -205,9 +205,9 @@ internal class Program
                         newMax = Math.Max(initialMax, current);
                     } while (Interlocked.CompareExchange(ref maxActiveCount, newMax, initialMax) != initialMax);
 
-                    Console.WriteLine($"[Request {requestId}] Starting обслуживания (active: {current})");
+                    Console.WriteLine($"Request {requestId} Starting обслуживания (active: {current})");
                     await Task.Delay(100);
-                    Console.WriteLine($"[Request {requestId}] Finished обслуживания");
+                    Console.WriteLine($"Request {requestId} Finished обслуживания");
                 }
                 finally
                 {
@@ -337,7 +337,7 @@ internal class Program
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine($"   [Cancel] Operation was canceled by token. Partial sum: {sumCancel}");
+            Console.WriteLine($"   Cancel: Operation was canceled by token. Partial sum: {sumCancel}");
         }
     }
     #endregion
@@ -397,13 +397,13 @@ internal class Program
 
         Console.WriteLine("Console context (SynchronizationContext.Current == null)");
 
-        Console.WriteLine($"[ConfigureAwait(true)]  Before await: Thread ID = {Environment.CurrentManagedThreadId}");
+        Console.WriteLine($"ConfigureAwait(true)  Before await: Thread ID = {Environment.CurrentManagedThreadId}");
         int resTrue = await Compute42Async().ConfigureAwait(true);
-        Console.WriteLine($"[ConfigureAwait(true)]  After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resTrue}");
+        Console.WriteLine($"ConfigureAwait(true)  After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resTrue}");
 
-        Console.WriteLine($"[ConfigureAwait(false)] Before await: Thread ID = {Environment.CurrentManagedThreadId}");
+        Console.WriteLine($"ConfigureAwait(false) Before await: Thread ID = {Environment.CurrentManagedThreadId}");
         int resFalse = await Compute42Async().ConfigureAwait(false);
-        Console.WriteLine($"[ConfigureAwait(false)] After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resFalse}");
+        Console.WriteLine($"ConfigureAwait(false) After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resFalse}");
 
         Console.WriteLine("\nExperiment with custom SynchronizationContext");
         var customContext = new SingleThreadSynchronizationContext();
@@ -411,13 +411,13 @@ internal class Program
 
         try
         {
-            Console.WriteLine($"[With Context] Before await: Thread ID = {Environment.CurrentManagedThreadId}");
+            Console.WriteLine($"With Context: Before await: Thread ID = {Environment.CurrentManagedThreadId}");
 
             int resCtx = await Compute42Async().ConfigureAwait(true);
-            Console.WriteLine($"[With Context (true)] After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resCtx}");
+            Console.WriteLine($"With Context (true): After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resCtx}");
 
             int resNoCtx = await Compute42Async().ConfigureAwait(false);
-            Console.WriteLine($"[With Context (false)] After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resNoCtx}");
+            Console.WriteLine($"With Context (false): After await: Thread ID = {Environment.CurrentManagedThreadId}, Result = {resNoCtx}");
         }
         finally
         {

@@ -17,14 +17,13 @@ public class Catalog<T> : IEnumerable<T> where T : class, IIdentifiable
         ArgumentNullException.ThrowIfNull(item);
 
         if (_byId.ContainsKey(item.Id))
-            return false; // Повторный идентификатор отклоняется
+            return false;
 
         _items.Add(item);
         _byId.Add(item.Id, item);
         return true;
     }
 
-    // Индексатор 1: по целочисленной позиции (0-based)
     public T this[int index]
     {
         get
@@ -35,7 +34,6 @@ public class Catalog<T> : IEnumerable<T> where T : class, IIdentifiable
         }
     }
 
-    // Индексатор 2: по строковому идентификатору (возвращает null при отсутствии)
     public T? this[string id]
     {
         get
